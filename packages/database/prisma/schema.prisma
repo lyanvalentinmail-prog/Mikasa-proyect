@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  avatar       String?
+  role         String   @default("USER")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  bots         Bot[]
+}
+
+model Bot {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  type           String        @default("WhatsApp Sub-bot")
+  prefix         String        @default(".")
+  developer      String        @default("Lyan")
+  website        String        @default("https://mikasa-bot.com")
+  profilePicture String        @default("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&h=200&fit=crop")
+  banner         String        @default("https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1200&h=400&fit=crop")
+  description    String        @default("Sub-bot de WhatsApp creado con Mikasa")
+  status         String        @default("DISCONNECTED")
+  phone          String?
+  isConnected    Boolean       @default(false)
+  autoReconnect  Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  categories     Category[]
+  commands       Command[]
+  menuTemplate   MenuTemplate?
+  plugins        BotPlugin[]
+  logs           BotLog[]
+  stat           BotStat?
+  session        BotSession?
+
+  @@index([userId])
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  botId       String
+  bot         Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
+  name        String
+  icon        String    @default("Sparkles")
+  symbol      String?
+  description String    @default("")
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  commands    Command[]
+
+  @@index([botId])
+}
+
+model Command {
+  id           String    @id @default(cuid())
+  botId        String
+  bot          Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
+  categoryId   String?
+  category     Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  name         String
+  aliases      String    @default("[]") // JSON string of aliases
+  description  String
+  usage        String
+  response     String
+  enabled      Boolean   @default(true)
+  allowPrivate Boolean   @default(true)
+  allowGroup   Boolean   @default(true)
+  adminOnly    Boolean   @default(false)
+  ownerOnly    Boolean   @default(false)
+  isPlugin     Boolean   @default(false)
+  pluginId     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([botId])
+  @@index([categoryId])
+}
+
+model MenuTemplate {
+  id                String   @id @default(cuid())
+  botId             String   @unique
+  bot               Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  greeting          String   @default("")
+  intro             String   @default("")
+  separator         String   @default("──")
+  categoryHeader    String   @default("")
+  commandFormat     String   @default("")
+  categorySymbol    String   @default("")
+  commandSymbol     String   @default("")
+  footer            String   @default("")
+  developerNote     String   @default("")
+  websiteNote       String   @default("")
+  customTemplate    String?
+  useExactAesthetic Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model BotPlugin {
+  id          String   @id @default(cuid())
+  botId       String
+  bot         Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  pluginId    String
+  name        String
+  description String
+  enabled     Boolean  @default(true)
+  config      String   @default("{}") // JSON string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([botId, pluginId])
+  @@index([botId])
+}
+
+model BotLog {
+  id        String   @id @default(cuid())
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  level     String   @default("INFO")
+  message   String
+  metadata  String?  // JSON string
+  timestamp DateTime @default(now())
+
+  @@index([botId])
+}
+
+model BotStat {
+  id               String    @id @default(cuid())
+  botId            String    @unique
+  bot              Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
+  messagesReceived Int       @default(0)
+  commandsExecuted Int       @default(0)
+  uniqueUsers      Int       @default(0)
+  uniqueGroups     Int       @default(0)
+  uptimeSeconds    Int       @default(0)
+  errorsCount      Int       @default(0)
+  lastMessageAt    DateTime?
+  connectedAt      DateTime?
+  updatedAt        DateTime  @updatedAt
+}
+
+model BotSession {
+  id          String   @id @default(cuid())
+  botId       String   @unique
+  bot         Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  sessionData String?  // JSON / Base64 credentials
+  isAlive     Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
