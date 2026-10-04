@@ -1,5 +1,0 @@
-{
-  "name":"mikasa-bot-builder","private":true,"version":"0.1.0","type":"module",
-  "workspaces":["apps/*","packages/*"],
-  "scripts":{"dev":"node apps/api/server.js","start":"node apps/api/server.js","build":"node -e \"console.log('Build ready: API + static web')\"","lint":"node --check apps/api/server.js","typecheck":"node --check apps/api/server.js"}
-}
