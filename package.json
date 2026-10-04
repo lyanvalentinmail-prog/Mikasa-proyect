@@ -1,0 +1,31 @@
+{
+  "name": "mikasa-bot-builder-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WhatsApp Sub-Bot Builder & SaaS Platform",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"API,WEB\" -c \"blue,green\" \"npm run dev --workspace=apps/api\" \"npm run dev --workspace=apps/web\"",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspaces --if-present",
+    "start": "concurrently -n \"API,WEB\" -c \"blue,green\" \"npm run start --workspace=apps/api\" \"npm run start --workspace=apps/web\"",
+    "lint": "echo \"Linting all workspaces...\" && npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:generate": "npm run generate --workspace=packages/database",
+    "db:push": "npm run push --workspace=packages/database",
+    "db:seed": "npm run seed --workspace=packages/database"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "better-sqlite3": "^13.0.3"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@mikasa/bot",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mikasa/commands": "*",
+    "@mikasa/config": "*",
+    "@mikasa/database": "*",
+    "@mikasa/shared": "*",
+    "@mikasa/types": "*",
+    "@whiskeysockets/baileys": "^6.7.8",
+    "axios": "^1.7.2",
+    "node-cache": "^5.1.2",
+    "pino": "^9.1.0",
+    "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/pino": "^7.0.5",
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.4.5"
+  }
+}

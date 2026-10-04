@@ -1,0 +1,21 @@
+{
+  "name": "@mikasa/shared",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mikasa/types": "*",
+    "@mikasa/config": "*",
+    "qrcode": "^1.5.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.4.5"
+  }
+}
